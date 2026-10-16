@@ -1,0 +1,14 @@
+# Raw data comes from Kaggle; link to it in the README instead of committing it
+data/raw/*.csv
+*.zip
+
+# Local databases
+*.db
+*.db-journal
+
+# Python
+__pycache__/
+.venv/
+
+# Secrets
+.env
