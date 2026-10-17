@@ -40,11 +40,14 @@ If that fails, install Python from python.org and tick **"Add python.exe to PATH
 1. Go to **sqlite.org/download.html** → *Precompiled Binaries for Windows* → download **sqlite-tools-win-x64-….zip**.
 2. Unzip it to `C:\sqlite` (you should see `C:\sqlite\sqlite3.exe`).
 3. Add `C:\sqlite` to your PATH: press the Windows key, type **"environment variables"**, open *Edit environment variables for your account* → select **Path** → **Edit** → **New** → `C:\sqlite` → OK.
-4. Open a **new** terminal and check:
+4. Check it works. **Close every PowerShell window** (open ones don't see the PATH change), then press the Windows key, type **PowerShell**, press Enter, and type:
 
 ```powershell
 sqlite3 --version
 ```
+
+- **It worked** if you see a version line such as `3.46.1 2024-08-13 ...` (your numbers will differ).
+- **If you see `'sqlite3' is not recognized`**, run `Test-Path C:\sqlite\sqlite3.exe`. If that prints `False`, the zip probably unzipped into a subfolder (for example `C:\sqlite\sqlite-tools-win-x64-...\`). Move the files from that subfolder up into `C:\sqlite`, then open a new PowerShell and try again. If it prints `True`, redo step 3 and check the PATH entry is exactly `C:\sqlite`.
 
 Optional GUI: **DB Browser for SQLite** (sqlitebrowser.org) lets you browse tables and run queries with a mouse.
 
