@@ -1,6 +1,6 @@
 # Olist E-commerce Sales & Operations Analysis
 
-**Status:** in progress (data setup done; analysis and Power BI dashboard coming next)
+**Status:** in progress (data setup and first analysis done; more queries and the Power BI dashboard next)
 
 An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce): about 100k orders from 2016–2018 across 9 linked tables.
 
@@ -16,10 +16,30 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
+sql/analysis/   business questions (late deliveries vs reviews, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
+
+## Findings
+
+### Late deliveries are strongly associated with poor reviews
+
+Delivered orders, with review scores (1–5 stars). Queries: [`late_delivery_reviews.sql`](sql/analysis/late_delivery_reviews.sql) and [`is_later_worse.sql`](sql/analysis/is_later_worse.sql).
+
+| Delivery | Reviews | Avg score | 1-star reviews |
+|---|---:|---:|---:|
+| On time or early | 89,944 | 4.29 | 6.6% |
+| Late (all) | 6,409 | 2.27 | 53.7% |
+| 1–3 days late | 1,856 | 3.29 | |
+| 4–7 days late | 1,756 | 2.10 | |
+| 8+ days late | 2,797 | 1.70 | |
+
+- Late orders averaged **2.27 stars against 4.29** for on-time orders, and **over half (53.7%) got a 1-star review**, compared with 6.6% of on-time orders.
+- **Scores fall with every step of lateness.** Even a 1–3 day delay costs a full star. A steady drop like this is stronger evidence than a single gap between two groups, though it still shows association rather than proof of cause.
+- **When orders are late, they are often very late.** 44% of late orders arrived 8+ days after the estimate, so cutting severe delays should come first.
+- Checks: the lateness groups sum to the late total (1,856 + 1,756 + 2,797 = 6,409). Counting each order once instead of each review, to handle orders with multiple reviews, gives the same averages (2.27 vs 4.29).
 
 ## Data quality findings
 
