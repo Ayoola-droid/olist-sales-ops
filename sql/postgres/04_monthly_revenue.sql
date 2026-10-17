@@ -8,6 +8,9 @@ WITH monthly AS (
     FROM orders o
     JOIN order_items i ON i.order_id = o.order_id
     WHERE o.order_status NOT IN ('canceled', 'unavailable')
+      -- analysis window: complete months only (see README, data quality findings)
+      AND o.order_purchase_timestamp >= '2017-01-01'
+      AND o.order_purchase_timestamp <  '2018-09-01'
     GROUP BY 1
 )
 SELECT month,
