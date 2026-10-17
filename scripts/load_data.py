@@ -117,15 +117,20 @@ def load_sqlite(data_dir: Path, db_path: Path) -> None:
 
 
 # ------------------------------------------------------------ PostgreSQL
-def load_postgres(data_dir: Path, args) -> None:
+def connect_postgres(args):
+    """Open a PostgreSQL connection, asking for the password once per run."""
     try:
         import psycopg
     except ImportError:
         sys.exit('psycopg is not installed. Run:  py -m pip install "psycopg[binary]"')
+    if not os.environ.get("PGPASSWORD"):
+        os.environ["PGPASSWORD"] = getpass.getpass(f"Password for {args.user}: ")
+    return psycopg.connect(host=args.host, port=args.port, user=args.user,
+                           dbname=args.dbname, password=os.environ["PGPASSWORD"])
 
-    password = os.environ.get("PGPASSWORD") or getpass.getpass(f"Password for {args.user}: ")
-    conn = psycopg.connect(host=args.host, port=args.port, user=args.user,
-                           dbname=args.dbname, password=password)
+
+def load_postgres(data_dir: Path, args) -> None:
+    conn = connect_postgres(args)
     with conn, conn.cursor() as cur:
         cur.execute("SET client_encoding = 'UTF8'")
         cur.execute(sql_without_psql_commands(PROJECT / "sql/postgres/01_create_tables.sql"))

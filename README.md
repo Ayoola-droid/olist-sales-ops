@@ -16,7 +16,8 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-scripts/        load_data.py
+scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
+reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
 

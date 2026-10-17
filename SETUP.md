@@ -151,6 +151,22 @@ Interactive session: `psql -U postgres -d olist`, then `\dt` (list tables), `\d 
 
 ---
 
+## Run everything with one command
+
+Once the software is installed, `scripts/run_pipeline.py` does the whole process in one go: it loads the data, runs every check and query, and writes the results to a report.
+
+```powershell
+py scripts/run_pipeline.py --db sqlite               # load + check SQLite
+py scripts/run_pipeline.py --db postgres             # load + check PostgreSQL
+py scripts/run_pipeline.py --db both                 # both, then compare them
+py scripts/run_pipeline.py --db sqlite --skip-load   # re-run the checks only
+```
+
+- The results go to `reports/sqlite_report.md` and `reports/postgres_report.md`. Commit these, because GitHub shows them as readable tables.
+- It prints **PASS** or **FAIL** for the automatic checks, and ends with an error code if anything fails. That's what lets it run unattended later, for example in GitHub Actions.
+- With `--db both`, it confirms that the two databases return identical results.
+- When you write a new check, add it to a file in `sql/checks/`. The pipeline picks it up automatically.
+
 ## Check both databases agree
 
 `sql/checks/data_quality_checks.sql` uses only standard SQL, so it runs unchanged on both databases. Run it against each one: the numbers should match. Compare the row counts with the Kaggle page, which should show roughly 99k orders, 112k order items and 100k customers.
