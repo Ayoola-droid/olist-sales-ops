@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries vs reviews, by state, ...)
+sql/analysis/   business questions (late deliveries, revenue by category, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -49,6 +49,14 @@ Query: [`late_by_state.sql`](sql/analysis/late_by_state.sql). States with 100+ d
 - **Rio de Janeiro is the biggest problem by volume.** It handles 12.8% of orders but 23.3% of all late deliveries. Improving Rio would help the most customers.
 - **Slow is not the same as late.** Amazonas has the slowest deliveries (26.4 days) but only 2.8% arrive late, so estimates for remote states appear to be set generously. Late rate measures broken promises, not speed.
 - **Reviews follow reliability.** Across states, late rate and average review are strongly negatively correlated (r = −0.90).
+
+### Which categories bring in the most revenue
+
+Query: [`revenue_by_category.sql`](sql/analysis/revenue_by_category.sql). Item revenue excluding freight, Jan 2017 – Aug 2018, completed orders.
+
+- **Two routes to revenue.** Bed, bath & table sells the most items (11,089) but ranks 3rd, at R$93 per item. Watches & gifts sells about half as many but ranks 2nd, at R$200 per item, the highest in the top 15. Health & beauty leads by combining both.
+- **Volume alone isn't enough.** Telephony sells more items than toys, baby or perfumery but ranks 14th, at R$71 per item.
+- **Revenue is spread out at the top, concentrated overall.** The largest category is only 9.3% of revenue and the top 5 make 39.9%, but the top 15 of 74 categories (20%) bring in 76%.
 
 ## Data quality findings
 
