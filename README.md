@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries, revenue by category, sellers, ...)
+sql/analysis/   business questions (late deliveries, revenue by category, sellers, repeat customers, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -66,6 +66,23 @@ Query: [`seller_ranking.sql`](sql/analysis/seller_ranking.sql). Delivered orders
 - **Lateness is only part of the story.** Sellers #4 and #5 have almost the same late rate (9.2% vs 9.1%) but average 4.37 vs 3.50 stars. Across sellers, late rate and reviews are only moderately linked (r = −0.52, against −0.90 across states), so product and service quality matter too.
 - **A reliable northeast seller.** The #2 seller (Bahia) earns its revenue from high-value orders (about R$626 each) and has the lowest late rate in the top 15 (3.4%).
 - **Sales are concentrated.** The 424 sellers with 50+ orders are 14% of all 2,945 sellers but bring in 68% of delivered revenue. 12 of the top 15 are in São Paulo.
+
+### How long do repeat customers take to order again
+
+Query: [`time_to_second_order.sql`](sql/analysis/time_to_second_order.sql). Excludes canceled and unavailable orders.
+
+| Time to second order | Customers | Share |
+|---|---:|---:|
+| Same day | 896 | 31.0% |
+| 1–30 days | 571 | 19.8% |
+| 31–90 days | 504 | 17.5% |
+| 91–180 days | 419 | 14.5% |
+| Over 180 days | 498 | 17.2% |
+
+- **Most "same day" repeats aren't real returns.** 774 of the 896 placed both orders within 10 minutes, so they are one shopping trip split into two orders.
+- **True repeat buying is about 2%.** Excluding same-day orders, only 1,992 of 94,990 customers (2.1%) came back.
+- **Real returns are slow.** The median gap for genuine repeat customers is about 77 days, and 17% take more than six months.
+- **The window to win customers back is 1–3 months.** A follow-up timed 30–60 days after the first order would reach customers when they are most likely to return.
 
 ## Data quality findings
 
