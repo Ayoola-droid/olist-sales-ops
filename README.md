@@ -1,6 +1,6 @@
 # Olist E-commerce Sales & Operations Analysis
 
-**Status:** in progress (data setup and first analysis done; more queries and the Power BI dashboard next)
+**Status:** in progress (data setup and 10 SQL analysis queries done; PostgreSQL and the Power BI dashboard next)
 
 An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce): about 100k orders from 2016–2018 across 9 linked tables.
 
@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries by state and weight, revenue by category and concentration, sellers, repeat customers, ...)
+sql/analysis/   10 business questions (late deliveries, revenue, sellers, repeat customers, payments)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -115,6 +115,23 @@ Query: [`late_by_weight.sql`](sql/analysis/late_by_weight.sql). Delivered orders
 - **Most orders are small.** 57% of delivered orders weigh under 1 kg, and only 1.3% weigh 20 kg or more.
 - **Small orders pay the most for delivery relative to price.** Freight is 15–19% of goods value at every weight, but highest for the lightest orders (17.6%), which suggests a free-shipping threshold or bundling could help.
 - **Caveat:** weight and destination are not separated here, so part of the weight effect could come from where heavy orders are sent.
+
+### How customers pay
+
+Query: [`payment_mix.sql`](sql/analysis/payment_mix.sql). Completed orders, Jan 2017 – Aug 2018.
+
+| Payment type | Orders | Share of value | Avg payment | Split into instalments |
+|---|---:|---:|---:|---:|
+| Credit card | 75,390 | 78.5% | R$163 | 66.8% |
+| Boleto (bank slip) | 19,479 | 18.0% | R$145 | n/a |
+| Voucher | 3,734 | 2.2% | R$62 | n/a |
+| Debit card | 1,513 | 1.4% | R$140 | n/a |
+
+- **Credit cards dominate** with 78.5% of payment value. Boleto covers about 1 in 5 orders, likely customers without a card.
+- **Instalments are the norm.** Two-thirds of card payments are split, 20.5% into 6–10 instalments.
+- **Instalments fund bigger purchases.** Card payments of 7–10 instalments average R$331, about 3.5× single payments (R$96).
+- **Implication:** interest-free instalment offers matter most for high-value categories such as watches & gifts. Boleto customers can't split payments and may respond to different offers.
+- This also explains the 290 orders where customers paid more than the charge: instalment interest.
 
 ## Data quality findings
 
