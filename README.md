@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries, revenue by category and concentration, sellers, repeat customers, ...)
+sql/analysis/   business questions (late deliveries by state and weight, revenue by category and concentration, sellers, repeat customers, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -98,6 +98,23 @@ Query: [`revenue_concentration.sql`](sql/analysis/revenue_concentration.sql). Ru
 - **A long tail.** The other 40 categories, more than half the catalogue, bring in only 5% between them.
 - **Focus is cheap.** Delivery, seller and marketing improvements aimed at about 18 categories would cover 80% of the business. Whether to cut the tail depends on its costs, which this dataset doesn't include.
 - **The same pattern as sellers.** 14% of sellers earn 68% of revenue, so a small core drives the business on both sides.
+
+### Do heavier orders arrive later
+
+Query: [`late_by_weight.sql`](sql/analysis/late_by_weight.sql). Delivered orders, Jan 2017 – Aug 2018, grouped by total order weight.
+
+| Order weight | Orders | Late | Avg delivery days | Freight as % of goods |
+|---|---:|---:|---:|---:|
+| Under 1 kg | 54,449 | 6.5% | 12.0 | 17.6% |
+| 1–5 kg | 28,679 | 6.9% | 12.7 | 15.4% |
+| 5–10 kg | 7,778 | 7.0% | 13.4 | 16.1% |
+| 10–20 kg | 4,024 | 8.7% | 14.6 | 16.4% |
+| 20 kg+ | 1,257 | 9.5% | 15.3 | 18.8% |
+
+- **Weight matters a little; location matters a lot.** Late rates rise from 6.5% to 9.5% with weight, about 1.5×, against a 5× gap between states (4.0% to 21.4%). Regional logistics should come before bulky-item handling.
+- **Most orders are small.** 57% of delivered orders weigh under 1 kg, and only 1.3% weigh 20 kg or more.
+- **Small orders pay the most for delivery relative to price.** Freight is 15–19% of goods value at every weight, but highest for the lightest orders (17.6%), which suggests a free-shipping threshold or bundling could help.
+- **Caveat:** weight and destination are not separated here, so part of the weight effect could come from where heavy orders are sent.
 
 ## Data quality findings
 
