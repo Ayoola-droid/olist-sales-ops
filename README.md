@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries, revenue by category, sellers, repeat customers, ...)
+sql/analysis/   business questions (late deliveries, revenue by category and concentration, sellers, repeat customers, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -83,6 +83,21 @@ Query: [`time_to_second_order.sql`](sql/analysis/time_to_second_order.sql). Excl
 - **True repeat buying is about 2%.** Excluding same-day orders, only 1,992 of 94,990 customers (2.1%) came back.
 - **Real returns are slow.** The median gap for genuine repeat customers is about 77 days, and 17% take more than six months.
 - **The window to win customers back is 1–3 months.** A follow-up timed 30–60 days after the first order would reach customers when they are most likely to return.
+
+### How concentrated is revenue
+
+Query: [`revenue_concentration.sql`](sql/analysis/revenue_concentration.sql). Running total of category revenue, same basis as the category analysis.
+
+| Share of revenue | Categories needed | Share of categories |
+|---|---:|---:|
+| 50% | 8 | 11% |
+| 80% | 18 | 24% |
+| 95% | 34 | 46% |
+
+- **Almost exactly 80/20.** The top 20% of categories (15 of 74) bring in 76.3% of revenue.
+- **A long tail.** The other 40 categories, more than half the catalogue, bring in only 5% between them.
+- **Focus is cheap.** Delivery, seller and marketing improvements aimed at about 18 categories would cover 80% of the business. Whether to cut the tail depends on its costs, which this dataset doesn't include.
+- **The same pattern as sellers.** 14% of sellers earn 68% of revenue, so a small core drives the business on both sides.
 
 ## Data quality findings
 
