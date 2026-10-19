@@ -16,4 +16,5 @@ FROM orders o
 JOIN order_reviews r ON r.order_id = o.order_id
 WHERE o.order_status = 'delivered'
   AND o.order_delivered_customer_date IS NOT NULL
-GROUP BY delivery_status;
+GROUP BY delivery_status
+ORDER BY delivery_status;

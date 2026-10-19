@@ -7,13 +7,14 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 **Business question:** where is revenue coming from, and how do delivery delays affect customer reviews?
 
 ## Tools
-- **SQL**: the same data model in both SQLite and PostgreSQL, with data-quality checks that run on both
+- **SQL**: the same data model and all 10 analysis queries in both SQLite and PostgreSQL, verified to give identical results; data-quality checks run on both
 - **Python**: a loader script that validates the files and bulk-loads either database
 - **Power BI**: star schema, DAX measures and a two-page dashboard (to come)
 
 ## Repository layout
 ```
-sql/postgres/   table definitions, \copy load, constraints, analysis queries
+sql/postgres/   table definitions, \copy load, constraints, monthly revenue
+sql/postgres/analysis/  PostgreSQL versions of the analysis queries (same results as SQLite)
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
