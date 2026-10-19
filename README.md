@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries, revenue by category, ...)
+sql/analysis/   business questions (late deliveries, revenue by category, sellers, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -57,6 +57,15 @@ Query: [`revenue_by_category.sql`](sql/analysis/revenue_by_category.sql). Item r
 - **Two routes to revenue.** Bed, bath & table sells the most items (11,089) but ranks 3rd, at R$93 per item. Watches & gifts sells about half as many but ranks 2nd, at R$200 per item, the highest in the top 15. Health & beauty leads by combining both.
 - **Volume alone isn't enough.** Telephony sells more items than toys, baby or perfumery but ranks 14th, at R$71 per item.
 - **Revenue is spread out at the top, concentrated overall.** The largest category is only 9.3% of revenue and the top 5 make 39.9%, but the top 15 of 74 categories (20%) bring in 76%.
+
+### Who are the best and worst sellers
+
+Query: [`seller_ranking.sql`](sql/analysis/seller_ranking.sql). Delivered orders, Jan 2017 – Aug 2018, 424 sellers with 50+ orders.
+
+- **Big isn't always good.** Two of the top 5 sellers by revenue rank 376th and 411th of 424 on reviews (3.85 and 3.50 stars) across about 2,750 orders, so their problems reach the most customers.
+- **Lateness is only part of the story.** Sellers #4 and #5 have almost the same late rate (9.2% vs 9.1%) but average 4.37 vs 3.50 stars. Across sellers, late rate and reviews are only moderately linked (r = −0.52, against −0.90 across states), so product and service quality matter too.
+- **A reliable northeast seller.** The #2 seller (Bahia) earns its revenue from high-value orders (about R$626 each) and has the lowest late rate in the top 15 (3.4%).
+- **Sales are concentrated.** The 424 sellers with 50+ orders are 14% of all 2,945 sellers but bring in 68% of delivered revenue. 12 of the top 15 are in São Paulo.
 
 ## Data quality findings
 
