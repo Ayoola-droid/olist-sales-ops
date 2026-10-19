@@ -33,7 +33,8 @@ WHERE order_status = 'delivered' AND order_delivered_customer_date IS NULL
 UNION ALL
 SELECT 'delivered before it was bought', COUNT(*)
 FROM orders
-WHERE order_delivered_customer_date < order_purchase_timestamp;
+WHERE order_delivered_customer_date < order_purchase_timestamp
+ORDER BY check_name;
 
 -- 4. Real repeat customers (by customer_unique_id)
 WITH per_person AS (
@@ -47,7 +48,7 @@ SELECT COUNT(*) AS customers,
        ROUND(100.0 * SUM(CASE WHEN orders > 1 THEN 1 ELSE 0 END) / COUNT(*), 2) AS repeat_pct
 FROM per_person;
 
--- 5. The 380 orders where payments do not equal items + freight: by how much?
+-- 5. Orders where payments do not equal items + freight (by more than 1 cent): by how much?
 WITH item_totals AS (
     SELECT order_id, SUM(price + freight_value) AS items_total
     FROM order_items GROUP BY order_id
@@ -63,5 +64,5 @@ SELECT CASE WHEN p.paid_total > i.items_total THEN 'paid more than charged'
        ROUND(MAX(ABS(p.paid_total - i.items_total)), 2) AS max_gap
 FROM item_totals i
 JOIN payment_totals p ON p.order_id = i.order_id
-WHERE ABS(i.items_total - p.paid_total) > 0.01
+WHERE ROUND(ABS(i.items_total - p.paid_total), 2) > 0.01
 GROUP BY 1;

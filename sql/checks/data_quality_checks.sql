@@ -16,7 +16,8 @@ UNION ALL SELECT 'orders',               COUNT(*) FROM orders
 UNION ALL SELECT 'order_items',          COUNT(*) FROM order_items
 UNION ALL SELECT 'order_payments',       COUNT(*) FROM order_payments
 UNION ALL SELECT 'order_reviews',        COUNT(*) FROM order_reviews
-UNION ALL SELECT 'geolocation',          COUNT(*) FROM geolocation;
+UNION ALL SELECT 'geolocation',          COUNT(*) FROM geolocation
+ORDER BY table_name;
 
 -- 2. Orders by status, with missing delivery dates
 SELECT order_status,
@@ -63,7 +64,8 @@ WHERE i.order_id IS NULL
 UNION ALL
 SELECT 'orders with no payment', COUNT(*)
 FROM orders o LEFT JOIN order_payments p ON p.order_id = o.order_id
-WHERE p.order_id IS NULL;
+WHERE p.order_id IS NULL
+ORDER BY check_name;
 
 -- 8. Product categories with no English translation
 SELECT p.product_category_name, COUNT(*) AS products
@@ -74,6 +76,8 @@ GROUP BY p.product_category_name
 ORDER BY products DESC;
 
 -- 9. Do payments match what was charged (items + freight)?
+--    ROUND(..., 2) compares whole cents. Without it, SQLite's floating-point sums
+--    count some exact 1-cent differences as slightly more than 0.01.
 WITH item_totals AS (
     SELECT order_id, SUM(price + freight_value) AS items_total
     FROM order_items GROUP BY order_id
@@ -83,6 +87,6 @@ payment_totals AS (
     FROM order_payments GROUP BY order_id
 )
 SELECT COUNT(*) AS orders_compared,
-       SUM(CASE WHEN ABS(i.items_total - p.paid_total) > 0.01 THEN 1 ELSE 0 END) AS orders_not_matching
+       SUM(CASE WHEN ROUND(ABS(i.items_total - p.paid_total), 2) > 0.01 THEN 1 ELSE 0 END) AS orders_not_matching
 FROM item_totals i
 JOIN payment_totals p ON p.order_id = i.order_id;

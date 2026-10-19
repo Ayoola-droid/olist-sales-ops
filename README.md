@@ -131,7 +131,7 @@ Query: [`payment_mix.sql`](sql/analysis/payment_mix.sql). Completed orders, Jan 
 - **Instalments are the norm.** Two-thirds of card payments are split, 20.5% into 6–10 instalments.
 - **Instalments fund bigger purchases.** Card payments of 7–10 instalments average R$331, about 3.5× single payments (R$96).
 - **Implication:** interest-free instalment offers matter most for high-value categories such as watches & gifts. Boleto customers can't split payments and may respond to different offers.
-- This also explains the 290 orders where customers paid more than the charge: instalment interest.
+- This also explains the 264 orders where customers paid more than the charge: instalment interest.
 
 ## Data quality findings
 
@@ -145,7 +145,7 @@ Checked with [`sql/checks/data_quality_checks.sql`](sql/checks/data_quality_chec
 | 775 orders have no items, and 1 order has no payment. 767 of the 775 are `unavailable` (603) or `canceled` (164). | These are orders that never went through, so dropping them in an inner join to items is correct for revenue. Order counts still state which population they cover. |
 | 789 review IDs are reused, and 547 orders have more than one review. | Review scores are averaged per order first, so no order is counted twice. |
 | 610 products have no category, and 13 products are in 2 categories with no English name. | They are grouped as "Unknown" in category charts. |
-| In 380 of 98,665 orders (0.4%), payments don't equal item price + freight. In 290 the customer paid more (average R$10.59 over, likely instalment interest); in 90 they paid less (average R$2.22 under, likely vouchers). | Revenue is based on item prices, not payments. |
+| In 303 of 98,665 orders (0.3%), payments differ from item price + freight by more than 1 cent. In 264 the customer paid more (average R$11.63 over, likely instalment interest); in 39 they paid less (average R$5.10 under, likely vouchers). | Revenue is based on item prices, not payments. Comparing whole cents matters: SQLite's floating-point sums first reported 380, because they counted some exact 1-cent differences as slightly more; PostgreSQL's exact `NUMERIC` type gave 303. |
 | Orders run from Sept 2016 to Oct 2018, but the edges are sparse: 329 orders in all of 2016 (none in Nov 2016), and only 20 in Sept–Oct 2018, none delivered. | The analysis window is **Jan 2017 – Aug 2018** (20 complete months, 99,092 orders). |
 
 ## Reproduce it
