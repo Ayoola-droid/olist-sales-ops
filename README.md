@@ -16,7 +16,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 sql/postgres/   table definitions, \copy load, constraints, analysis queries
 sql/sqlite/     table definitions and analysis queries
 sql/checks/     portable data-quality checks
-sql/analysis/   business questions (late deliveries vs reviews, ...)
+sql/analysis/   business questions (late deliveries vs reviews, by state, ...)
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
 data/raw/       the Kaggle CSVs go here (not committed)
@@ -40,6 +40,15 @@ Delivered orders, with review scores (1–5 stars). Queries: [`late_delivery_rev
 - **Scores fall with every step of lateness.** Even a 1–3 day delay costs a full star. A steady drop like this is stronger evidence than a single gap between two groups, though it still shows association rather than proof of cause.
 - **When orders are late, they are often very late.** 44% of late orders arrived 8+ days after the estimate, so cutting severe delays should come first.
 - Checks: the lateness groups sum to the late total (1,856 + 1,756 + 2,797 = 6,409). Counting each order once instead of each review, to handle orders with multiple reviews, gives the same averages (2.27 vs 4.29).
+
+### Where late deliveries happen
+
+Query: [`late_by_state.sql`](sql/analysis/late_by_state.sql). States with 100+ delivered orders (AC, AP and RR excluded).
+
+- **The northeast is least reliable.** Alagoas is late on 21.4% of orders, nearly 5× São Paulo (4.5%). The six worst states are all in the northeast.
+- **Rio de Janeiro is the biggest problem by volume.** It handles 12.8% of orders but 23.3% of all late deliveries. Improving Rio would help the most customers.
+- **Slow is not the same as late.** Amazonas has the slowest deliveries (26.4 days) but only 2.8% arrive late, so estimates for remote states appear to be set generously. Late rate measures broken promises, not speed.
+- **Reviews follow reliability.** Across states, late rate and average review are strongly negatively correlated (r = −0.90).
 
 ## Data quality findings
 
