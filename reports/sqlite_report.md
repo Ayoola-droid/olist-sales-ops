@@ -1,5 +1,5 @@
 # SQLite pipeline report
-Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
+Generated 2026-10-19 18:13 by `scripts/run_pipeline.py` in 4.0s.
 
 ## Automatic checks
 
@@ -12,15 +12,15 @@ Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
 
 | table_name | row_count |
 |---|---|
-| customers | 99,441 |
-| sellers | 3,095 |
 | category_translation | 71 |
-| products | 32,951 |
-| orders | 99,441 |
+| customers | 99,441 |
+| geolocation | 1,000,163 |
 | order_items | 112,650 |
 | order_payments | 103,886 |
 | order_reviews | 99,224 |
-| geolocation | 1,000,163 |
+| orders | 99,441 |
+| products | 32,951 |
+| sellers | 3,095 |
 
 ### 2. Orders by status, with missing delivery dates
 
@@ -63,11 +63,11 @@ Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
 
 | check_name | problem_rows |
 |---|---|
-| orders without customer | 0 |
 | items without product | 0 |
 | items without seller | 0 |
 | orders with no items | 775 |
 | orders with no payment | 1 |
+| orders without customer | 0 |
 
 ### 8. Product categories with no English translation
 
@@ -81,7 +81,7 @@ Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
 
 | orders_compared | orders_not_matching |
 |---|---|
-| 98,665 | 380 |
+| 98,665 | 303 |
 
 ## `sql/checks/follow_up_checks.sql`
 
@@ -130,8 +130,8 @@ Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
 | check_name | orders |
 |---|---|
 | canceled but has a delivery date | 6 |
-| delivered but no delivery date | 8 |
 | delivered before it was bought | 0 |
+| delivered but no delivery date | 8 |
 
 ### 4. Real repeat customers (by customer_unique_id)
 
@@ -139,12 +139,12 @@ Generated 2026-10-17 16:49 by `scripts/run_pipeline.py` in 3.4s.
 |---|---|---|
 | 96,096 | 2,997 | 3.12 |
 
-### 5. The 380 orders where payments do not equal items + freight: by how much?
+### 5. Orders where payments do not equal items + freight (by more than 1 cent): by how much?
 
 | direction | orders | avg_gap | max_gap |
 |---|---|---|---|
-| paid less than charged | 90 | 2.22 | 51.62 |
-| paid more than charged | 290 | 10.59 | 182.81 |
+| paid less than charged | 39 | 5.1 | 51.62 |
+| paid more than charged | 264 | 11.63 | 182.81 |
 
 ## `sql/sqlite/02_monthly_revenue.sql`
 
