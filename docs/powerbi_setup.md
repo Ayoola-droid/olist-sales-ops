@@ -59,6 +59,10 @@ Power BI links any columns with matching names, which causes two problems in thi
 - **Delete any fact-to-fact relationships.** Auto-detect links `fact_orders[order_id]` to `order_id` in `fact_order_items` and `fact_payments`. They usually appear as **dotted lines**, meaning inactive. Facts should only meet through shared dimensions, so select each of these lines and press **Delete**.
 - **Change `dim_customer` → `fact_orders` from one-to-one to many-to-one.** Olist creates one `customer_id` per order, so the columns are unique on both sides and Power BI picks **One to one (1:1)** with **Both** directions. Edit it to **Many to one (\*:1)** with **Single** direction, so it behaves like every other dimension. Two-way filtering in a star schema can give confusing totals.
 
+### If a date relationship is dotted (inactive)
+
+Power BI makes a new relationship **inactive** (a dotted line) when it would create a second filter path between two tables. This happens if you add the date relationships while the customer relationship is still two-way: the date filter could then reach `fact_order_items` both directly and through `fact_orders` → `dim_customer`. Fixing the customer relationship removes the second path, but the date relationships stay inactive. Double-click each dotted line, tick **Make this relationship active**, and click **OK**. If Power BI refuses because the relationship is ambiguous, a two-way relationship is still in the model; set it to **Single**.
+
 ### Mark the date table
 
 Select `dim_date` → **Table tools** → **Mark as date table** → choose the `date` column. This makes time-intelligence DAX (year-on-year, running totals) work properly.
