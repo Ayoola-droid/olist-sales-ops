@@ -1,6 +1,6 @@
 # Olist E-commerce Sales & Operations Analysis
 
-**Status:** in progress (data setup and 10 SQL analysis queries done; PostgreSQL and the Power BI dashboard next)
+**Status:** in progress (data setup, 10 SQL analysis queries and PostgreSQL done; Power BI dashboard next)
 
 An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce): about 100k orders from 2016–2018 across 9 linked tables.
 
@@ -11,6 +11,23 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 - **Python**: a loader script that validates the files and bulk-loads either database
 - **Power BI**: star schema, DAX measures and a two-page dashboard (to come)
 
+## Data model
+
+Nine tables, with `orders` at the centre. The full diagram with every column, plus the joins and traps to watch for, is in [docs/data_model.md](docs/data_model.md).
+
+```mermaid
+erDiagram
+    customers ||--|| orders : "places"
+    orders ||--o{ order_items : "contains"
+    products ||--o{ order_items : "is sold as"
+    sellers ||--o{ order_items : "fulfils"
+    orders ||--o{ order_payments : "is paid by"
+    orders ||--o{ order_reviews : "is reviewed in"
+    category_translation |o--o{ products : "names"
+    geolocation }o--o{ customers : "zip prefix"
+    geolocation }o--o{ sellers : "zip prefix"
+```
+
 ## Repository layout
 ```
 sql/postgres/   table definitions, \copy load, constraints, monthly revenue
@@ -20,6 +37,7 @@ sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
+docs/           data model: how the tables relate
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
 
