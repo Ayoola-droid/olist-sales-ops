@@ -114,3 +114,31 @@ erDiagram
 - **PostgreSQL** adds the primary keys in [`01_create_tables.sql`](../sql/postgres/01_create_tables.sql) and the foreign keys and indexes after loading, in [`03_add_constraints.sql`](../sql/postgres/03_add_constraints.sql). If any row broke a relationship, adding the foreign keys would fail.
 - **SQLite** declares the keys in [`01_create_tables.sql`](../sql/sqlite/01_create_tables.sql), and the loader checks them with `PRAGMA foreign_key_check`.
 - [`data_quality_checks.sql`](../sql/checks/data_quality_checks.sql) re-checks the joins on both databases (no orphan orders, items, products or sellers).
+
+## The Power BI star schema
+
+Power BI doesn't read the raw tables. It reads views from [`05_powerbi_views.sql`](../sql/postgres/05_powerbi_views.sql), in a separate `powerbi` schema, arranged as a star schema: three fact tables, each at a single grain, sharing four dimensions. Because items, payments and reviews each live in their own fact, or are rolled up to the order first, none of the join traps above can double-count.
+
+```mermaid
+erDiagram
+    dim_date ||--o{ fact_orders : "purchase_date"
+    dim_date ||--o{ fact_order_items : "purchase_date"
+    dim_date ||--o{ fact_payments : "purchase_date"
+    dim_customer ||--o{ fact_orders : "customer_id"
+    dim_customer ||--o{ fact_order_items : "customer_id"
+    dim_customer ||--o{ fact_payments : "customer_id"
+    dim_product ||--o{ fact_order_items : "product_id"
+    dim_seller ||--o{ fact_order_items : "seller_id"
+```
+
+| View | One row per | Used for |
+|---|---|---|
+| `fact_orders` | order (99,441) | delivery time, lateness, review score, order value |
+| `fact_order_items` | item sold (112,650) | revenue by category, product and seller |
+| `fact_payments` | payment (103,883) | payment types and instalments |
+| `dim_date` | day, Sep 2016 – Oct 2018 | trends by month, quarter, weekday |
+| `dim_customer` | `customer_id` | state, region, city, real person (`customer_unique_id`) |
+| `dim_product` | product | English category, weight, volume |
+| `dim_seller` | seller | state, region, short code for charts |
+
+Every fact has `is_completed` (not canceled or unavailable) and `in_analysis_window` (Jan 2017 – Aug 2018) flags, so the dashboard can use the same filters as the SQL analysis. `is_late` is stored as 0 or 1, so averaging it gives the late rate. States are grouped into Brazil's five regions.

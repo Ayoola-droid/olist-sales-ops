@@ -30,7 +30,7 @@ erDiagram
 
 ## Repository layout
 ```
-sql/postgres/   table definitions, \copy load, constraints, monthly revenue
+sql/postgres/   table definitions, \copy load, constraints, monthly revenue, Power BI views
 sql/postgres/analysis/  PostgreSQL versions of the analysis queries (same results as SQLite)
 sql/sqlite/     table definitions, monthly revenue
 sql/checks/     portable data-quality checks
