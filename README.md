@@ -9,7 +9,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 ## Tools
 - **SQL**: the same data model and all 10 analysis queries in both SQLite and PostgreSQL, verified to give identical results; data-quality checks run on both
 - **Python**: a loader script that validates the files and bulk-loads either database
-- **Power BI**: star schema, DAX measures and a two-page dashboard (to come)
+- **Power BI**: connected to PostgreSQL through star-schema views ([setup guide](docs/powerbi_setup.md)); DAX measures and a two-page dashboard to come
 
 ## Data model
 
@@ -37,7 +37,7 @@ sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
-docs/           data model: how the tables relate
+docs/           data model (how the tables relate) and Power BI setup
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
 

@@ -198,3 +198,7 @@ Things the checks will show in the real data, worth a line in your README:
 ## Before you push to GitHub
 
 `.gitignore` already leaves out the CSVs and `olist.db`. They are large, and the README should link to Kaggle instead of including the data. Commit the `sql` folder, the `scripts` folder and this guide.
+
+## Next: Power BI
+
+To build the dashboard on top of PostgreSQL, follow [docs/powerbi_setup.md](docs/powerbi_setup.md).
