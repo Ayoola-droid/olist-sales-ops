@@ -13,7 +13,7 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 
 ## Dashboard
 
-Two pages in [`olist_dashboard.pbix`](olist_dashboard.pbix), covering Jan 2017 – Aug 2018 with region and year slicers. Open it in Power BI Desktop (free, Windows).
+Two pages in [`olist_dashboard.pbix`](olist_dashboard.pbix), covering Jan 2017 – Aug 2018 with region and year slicers. Open it in Power BI Desktop (free, Windows), or view the **[PDF version](docs/olist_dashboard.pdf)** without installing anything.
 
 **Sales:** where revenue comes from.
 
@@ -49,7 +49,7 @@ sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
-docs/           recommendations memo, data model, Power BI setup, DAX measures, dashboard images
+docs/           recommendations memo, dashboard PDF and images, data model, Power BI setup, DAX measures
 olist_dashboard.pbix  the Power BI dashboard
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
