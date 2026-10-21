@@ -1,6 +1,6 @@
 # Olist E-commerce Sales & Operations Analysis
 
-**Status:** in progress (data setup, 10 SQL queries, PostgreSQL and the Power BI dashboard done; recommendations memo next)
+**Status:** analysis, dashboard and recommendations complete. Read the **[one-page memo to the Head of Operations](docs/memo_head_of_operations.md)** for the three recommendations.
 
 An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce): about 100k orders from 2016–2018 across 9 linked tables.
 
@@ -49,7 +49,7 @@ sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
-docs/           data model, Power BI setup, DAX measures, dashboard images
+docs/           recommendations memo, data model, Power BI setup, DAX measures, dashboard images
 olist_dashboard.pbix  the Power BI dashboard
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
