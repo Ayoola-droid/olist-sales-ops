@@ -1,6 +1,6 @@
 # Olist E-commerce Sales & Operations Analysis
 
-**Status:** in progress (data setup, 10 SQL analysis queries and PostgreSQL done; Power BI dashboard next)
+**Status:** in progress (data setup, 10 SQL queries, PostgreSQL and the Power BI dashboard done; recommendations memo next)
 
 An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce): about 100k orders from 2016–2018 across 9 linked tables.
 
@@ -9,7 +9,19 @@ An end-to-end analytics project on the [Brazilian E-Commerce Public Dataset by O
 ## Tools
 - **SQL**: the same data model and all 10 analysis queries in both SQLite and PostgreSQL, verified to give identical results; data-quality checks run on both
 - **Python**: a loader script that validates the files and bulk-loads either database
-- **Power BI**: connected to PostgreSQL through star-schema views ([setup guide](docs/powerbi_setup.md)); DAX measures and a two-page dashboard to come
+- **Power BI**: a two-page dashboard on PostgreSQL star-schema views, with [DAX measures](docs/dax_measures.md) that match the SQL results ([setup guide](docs/powerbi_setup.md))
+
+## Dashboard
+
+Two pages in [`olist_dashboard.pbix`](olist_dashboard.pbix), covering Jan 2017 – Aug 2018 with region and year slicers. Open it in Power BI Desktop (free, Windows).
+
+**Sales:** where revenue comes from.
+
+![Sales page: revenue KPIs, monthly revenue with the Black Friday peak, top 10 categories, payment mix and revenue by region](docs/images/dashboard_sales.png)
+
+**Operations:** where and why deliveries go wrong.
+
+![Operations page: delivery KPIs, review score by lateness, late rate by month and by state, and top sellers by revenue vs review](docs/images/dashboard_operations.png)
 
 ## Data model
 
@@ -37,7 +49,8 @@ sql/checks/     portable data-quality checks
 sql/analysis/   business questions: late deliveries, revenue by category, sellers, repeat customers, payments
 scripts/        load_data.py, run_pipeline.py (load + check + report in one command)
 reports/        generated check results for each database
-docs/           data model (how the tables relate) and Power BI setup
+docs/           data model, Power BI setup, DAX measures, dashboard images
+olist_dashboard.pbix  the Power BI dashboard
 data/raw/       the Kaggle CSVs go here (not committed)
 ```
 
@@ -68,6 +81,23 @@ Query: [`late_by_state.sql`](sql/analysis/late_by_state.sql). States with 100+ d
 - **Rio de Janeiro is the biggest problem by volume.** It handles 12.8% of orders but 23.3% of all late deliveries. Improving Rio would help the most customers.
 - **Slow is not the same as late.** Amazonas has the slowest deliveries (26.4 days) but only 2.8% arrive late, so estimates for remote states appear to be set generously. Late rate measures broken promises, not speed.
 - **Reviews follow reliability.** Across states, late rate and average review are strongly negatively correlated (r = −0.90).
+
+### Lateness comes in two waves
+
+Found on the dashboard's monthly late-rate chart. Delivered orders by purchase month.
+
+| Month | Delivered orders | Late | Avg delivery days |
+|---|---:|---:|---:|
+| Typical 2017 month | 3,000–4,500 | 3–4% | about 11.5 |
+| **Nov 2017** (Black Friday) | 7,288 | **12.4%** | 15.1 |
+| Jan 2018 | 7,069 | 5.7% | 14.0 |
+| **Feb 2018** | 6,555 | **14.1%** | 16.9 |
+| **Mar 2018** | 7,003 | **19.0%** | 16.2 |
+| Jun – Aug 2018 | 6,100–6,400 | 1.2–6.2% | 7.7–9.2 |
+
+- **November 2017 was a volume problem.** Orders jumped 63% on October and the delivery network couldn't keep up.
+- **February–March 2018 was not.** January had the same volume with only 5.7% late. In Feb–Mar, deliveries simply took longer (16–17 days) and nearly 1 in 5 March orders arrived late. The cause isn't in the data, so carrier performance in Q1 2018 is worth investigating.
+- **Delivery got much faster by mid-2018,** from about 12 days in 2017 to under 8 days by August 2018.
 
 ### Which categories bring in the most revenue
 
